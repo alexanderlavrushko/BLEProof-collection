@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		AB5A779226080CED00C3ED0A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5A779126080CED00C3ED0A /* AppDelegate.swift */; };
-		AB5A779626080CED00C3ED0A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5A779526080CED00C3ED0A /* ViewController.swift */; };
+		AB5A779626080CED00C3ED0A /* BLECentralViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB5A779526080CED00C3ED0A /* BLECentralViewController.swift */; };
 		AB5A779926080CED00C3ED0A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB5A779726080CED00C3ED0A /* Main.storyboard */; };
 		AB5A779B26080CEF00C3ED0A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AB5A779A26080CEF00C3ED0A /* Assets.xcassets */; };
 		AB5A779E26080CEF00C3ED0A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AB5A779C26080CEF00C3ED0A /* LaunchScreen.storyboard */; };
@@ -17,7 +17,7 @@
 /* Begin PBXFileReference section */
 		AB5A778E26080CED00C3ED0A /* BLEProofCentral.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLEProofCentral.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB5A779126080CED00C3ED0A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AB5A779526080CED00C3ED0A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AB5A779526080CED00C3ED0A /* BLECentralViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLECentralViewController.swift; sourceTree = "<group>"; };
 		AB5A779826080CED00C3ED0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		AB5A779A26080CEF00C3ED0A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AB5A779D26080CEF00C3ED0A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -55,7 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				AB5A779126080CED00C3ED0A /* AppDelegate.swift */,
-				AB5A779526080CED00C3ED0A /* ViewController.swift */,
+				AB5A779526080CED00C3ED0A /* BLECentralViewController.swift */,
 				AB5A779726080CED00C3ED0A /* Main.storyboard */,
 				AB5A779A26080CEF00C3ED0A /* Assets.xcassets */,
 				AB5A779C26080CEF00C3ED0A /* LaunchScreen.storyboard */,
@@ -134,7 +134,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AB5A779626080CED00C3ED0A /* ViewController.swift in Sources */,
+				AB5A779626080CED00C3ED0A /* BLECentralViewController.swift in Sources */,
 				AB5A779226080CED00C3ED0A /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

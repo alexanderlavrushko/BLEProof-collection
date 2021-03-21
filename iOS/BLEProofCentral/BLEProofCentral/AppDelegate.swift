@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
 
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let rootVC = storyboard.instantiateInitialViewController() as? ViewController
+        let rootVC = storyboard.instantiateInitialViewController() as? BLECentralViewController
         window?.rootViewController = rootVC
         window?.makeKeyAndVisible()
 
