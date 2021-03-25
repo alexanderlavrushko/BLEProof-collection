@@ -1,3 +1,11 @@
 <resources>
-    <string name="app_name">BLEProofPeripheral</string>
+    <string name="app_name">BLEProof Peripheral</string>
+    <string name="text_static_is_advertising">Advertising</string>
+    <string name="text_connected">Central connected</string>
+    <string name="text_disconnected">Central not connected</string>
+    <string name="text_static_char_for_read">Readable characteristic:</string>
+    <string name="text_static_char_for_write">Writeable characteristic:</string>
+    <string name="text_static_char_for_indicate">Indicate (notify) characteristic:</string>
+    <string name="button_send">Send</string>
+    <string name="button_clear_log">Clear</string>
 </resources>

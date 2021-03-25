@@ -7,12 +7,167 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/textViewIsAdvertising"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_static_is_advertising"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switchAdvertising"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:checked="false"
+        app:layout_constraintBaseline_toBaselineOf="@+id/textViewIsAdvertising"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollViewLog"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_weight="1"
+        android:background="@drawable/img_gray_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextCharForIndicate">
+
+        <TextView
+            android:id="@+id/textViewLog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logs:" />
+
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/textViewConnectionState"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/img_gray_border"
+        android:text="@string/text_disconnected"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewIsAdvertising" />
+
+    <TextView
+        android:id="@+id/textViewCharForWrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHintCharForWrite" />
+
+    <TextView
+        android:id="@+id/textViewHintCharForWrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_static_char_for_write"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextCharForRead" />
+
+    <TextView
+        android:id="@+id/textViewHintCharForRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:labelFor="@id/editTextCharForRead"
+        android:text="@string/text_static_char_for_read"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewConnectionState" />
+
+    <EditText
+        android:id="@+id/editTextCharForRead"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:text="Android for read"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHintCharForRead" />
+
+    <TextView
+        android:id="@+id/textViewHintCharForIndicate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/text_static_char_for_indicate"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCharForWrite" />
+
+    <EditText
+        android:id="@+id/editTextCharForIndicate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Android indication"
+        app:layout_constraintEnd_toStartOf="@+id/buttonSend"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHintCharForIndicate" />
+
+    <Button
+        android:id="@+id/buttonSend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:onClick="onTapSend"
+        android:text="@string/button_send"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editTextCharForIndicate"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSubscribers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:text="0 subscribers"
+        app:layout_constraintBottom_toTopOf="@+id/buttonSend"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonClearLog"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:minWidth="48dip"
+        android:minHeight="32dip"
+        android:onClick="onTapClearLog"
+        android:paddingLeft="8dp"
+        android:paddingTop="4dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="4dp"
+        android:text="@string/button_clear_log"
+        app:layout_constraintEnd_toEndOf="@+id/scrollViewLog"
+        app:layout_constraintTop_toTopOf="@+id/scrollViewLog" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
