@@ -20,6 +20,14 @@ To run and see it working, you need 2 physical devices supporting Bluetooth Low 
 * Xcode - for iOS project
 * Arduino IDE [with ESP32 board installed](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) - for ESP32
 
+### Screenshots
+Android BLE Central: ![Screenshot of Android BLEProofCentral](/images/Screenshot-Android-Central.jpg)
+
+iOS BLE Peripheral: ![Screenshot of iOS BLEProofPeripheral](/images/Screenshot-iOS-Peripheral.jpg)
+
+ESP32 BLE Peripheral (Arduino Serial Monitor):
+![Screenshot of ESP32 BLEProofPeripheral](/images/Screenshot-ESP32-Peripheral.png) 
+
 ## Table of UUIDs
 Name | UUID
 ----- | ---------------
