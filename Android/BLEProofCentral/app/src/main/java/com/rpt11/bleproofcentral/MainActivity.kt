@@ -7,8 +7,10 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
@@ -83,16 +85,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        switchConnect.setOnCheckedChangeListener { _, _ ->
+        switchConnect.setOnCheckedChangeListener { _, isChecked ->
+            when (isChecked) {
+                true -> {
+                    val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+                    registerReceiver(bleOnOffListener, filter)
+                }
+                false -> {
+                    unregisterReceiver(bleOnOffListener)
+                }
+            }
             bleRestartLifecycle()
         }
         appendLog("MainActivity.onCreate")
     }
 
     override fun onDestroy() {
-        connectedGatt?.close()
-        safeStopBleScan()
-        setConnectedGattToNull()
+        bleEndLifecycle()
         super.onDestroy()
     }
 
@@ -148,6 +157,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun bleEndLifecycle() {
+        safeStopBleScan()
+        connectedGatt?.close()
+        setConnectedGattToNull()
+        lifecycleState = BLELifecycleState.Disconnected
+    }
+
     private fun setConnectedGattToNull() {
         connectedGatt = null
         characteristicForRead = null
@@ -164,10 +180,7 @@ class MainActivity : AppCompatActivity() {
                     connectedGatt?.disconnect()
                 }
             } else {
-                safeStopBleScan()
-                connectedGatt?.disconnect()
-                setConnectedGattToNull()
-                lifecycleState = BLELifecycleState.Disconnected
+                bleEndLifecycle()
             }
         }
     }
@@ -457,6 +470,22 @@ class MainActivity : AppCompatActivity() {
 
     private var activityResultHandlers = mutableMapOf<Int, (Int) -> Unit>()
     private var permissionResultHandlers = mutableMapOf<Int, (Array<out String>, IntArray) -> Unit>()
+    private var bleOnOffListener = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.STATE_OFF)) {
+                BluetoothAdapter.STATE_ON -> {
+                    appendLog("onReceive: Bluetooth ON")
+                    if (lifecycleState == BLELifecycleState.Disconnected) {
+                        bleRestartLifecycle()
+                    }
+                }
+                BluetoothAdapter.STATE_OFF -> {
+                    appendLog("onReceive: Bluetooth OFF")
+                    bleEndLifecycle()
+                }
+            }
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
