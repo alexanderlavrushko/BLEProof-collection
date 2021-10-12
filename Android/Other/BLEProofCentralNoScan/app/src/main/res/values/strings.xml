@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">BLEProofCentralNoScan</string>
+    <string name="text_pairing_description">To add a device, open Android Settings => Bluetooth, scan for available devices, and pair with your device.\n\nWe can use only devices already paired in Android Settings, because this app doesn\'t have BLUETOOTH_ADMIN permission and cannot perform Bluetooth scan.\n\nThe list is filtered to show only Bluetooth Low Energy devices.</string>
+    <string name="button_reload_devices">Refresh</string>
+    <string name="text_content_description_button_info">Show/hide info</string>
+    <string name="text_device_list_description">Paired BLE devices</string>
+    <string name="text_default_logs_value">Logs:</string>
+</resources>
