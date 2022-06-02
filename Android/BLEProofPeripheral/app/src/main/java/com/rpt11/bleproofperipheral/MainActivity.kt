@@ -378,6 +378,8 @@ class MainActivity : AppCompatActivity() {
                 return@enableBluetooth
             }
 
+            completion(true, "BLE ready for use")
+            /*
             grantLocationPermission(AskType.AskOnce) { isGranted ->
                 if (!isGranted) {
                     completion(false, "Location permission denied")
@@ -386,6 +388,7 @@ class MainActivity : AppCompatActivity() {
 
                 completion(true, "BLE ready for use")
             }
+            */
         }
     }
 
