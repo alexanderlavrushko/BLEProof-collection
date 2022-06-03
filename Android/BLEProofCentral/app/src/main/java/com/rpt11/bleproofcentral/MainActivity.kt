@@ -29,6 +29,7 @@ import java.util.*
 
 private const val ENABLE_BLUETOOTH_REQUEST_CODE = 1
 private const val LOCATION_PERMISSION_REQUEST_CODE = 2
+private const val BLUETOOTH_ALL_PERMISSIONS_REQUEST_CODE = 3
 private const val SERVICE_UUID = "25AE1441-05D3-4C5B-8281-93D4E07420CF"
 private const val CHAR_FOR_READ_UUID = "25AE1442-05D3-4C5B-8281-93D4E07420CF"
 private const val CHAR_FOR_WRITE_UUID = "25AE1443-05D3-4C5B-8281-93D4E07420CF"
@@ -506,19 +507,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun ensureBluetoothCanBeUsed(completion: (Boolean, String) -> Unit) {
-        enableBluetooth(AskType.AskOnce) { isEnabled ->
-            if (!isEnabled) {
-                completion(false, "Bluetooth OFF")
-                return@enableBluetooth
+        grantBluetoothCentralPermissions(AskType.AskOnce) { isGranted ->
+            if (!isGranted) {
+                completion(false, "Bluetooth permissions denied")
+                return@grantBluetoothCentralPermissions
             }
 
-            grantLocationPermission(AskType.AskOnce) { isGranted ->
-                if (!isGranted) {
-                    completion(false, "Location permission denied")
-                    return@grantLocationPermission
+            enableBluetooth(AskType.AskOnce) { isEnabled ->
+                if (!isEnabled) {
+                    completion(false, "Bluetooth OFF")
+                    return@enableBluetooth
                 }
 
-                completion(true, "Bluetooth ON, ready for use")
+                grantLocationPermissionIfRequired(AskType.AskOnce) { isGranted ->
+                    if (!isGranted) {
+                        completion(false, "Location permission denied")
+                        return@grantLocationPermissionIfRequired
+                    }
+
+                    completion(true, "Bluetooth ON, permissions OK, ready")
+                }
             }
         }
     }
@@ -547,20 +555,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun grantLocationPermission(askType: AskType, completion: (Boolean) -> Unit) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || isLocationPermissionGranted) {
+    private fun grantLocationPermissionIfRequired(askType: AskType, completion: (Boolean) -> Unit) {
+        val wantedPermissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // BLUETOOTH_SCAN permission has flag "neverForLocation", so location not needed
+            completion(true)
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || hasPermissions(wantedPermissions)) {
             completion(true)
         } else {
             runOnUiThread {
                 val requestCode = LOCATION_PERMISSION_REQUEST_CODE
-                val wantedPermission = Manifest.permission.ACCESS_FINE_LOCATION
 
                 // prepare motivation message
                 val builder = AlertDialog.Builder(this)
                 builder.setTitle("Location permission required")
                 builder.setMessage("BLE advertising requires location access, starting from Android 6.0")
                 builder.setPositiveButton(android.R.string.ok) { _, _ ->
-                    requestPermission(wantedPermission, requestCode)
+                    requestPermissionArray(wantedPermissions, requestCode)
                 }
                 builder.setCancelable(false)
 
@@ -582,15 +593,45 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val isLocationPermissionGranted
-        get() = hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+    private fun grantBluetoothCentralPermissions(askType: AskType, completion: (Boolean) -> Unit) {
+        val wantedPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            arrayOf(
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.BLUETOOTH_SCAN,
+            )
+        } else {
+            emptyArray()
+        }
 
-    private fun Context.hasPermission(permissionType: String): Boolean {
-        return ContextCompat.checkSelfPermission(this, permissionType) == PackageManager.PERMISSION_GRANTED
+        if (wantedPermissions.isEmpty() || hasPermissions(wantedPermissions)) {
+            completion(true)
+        } else {
+            runOnUiThread {
+                val requestCode = BLUETOOTH_ALL_PERMISSIONS_REQUEST_CODE
+
+                // set permission result handler
+                permissionResultHandlers[requestCode] = { _ /*permissions*/, grantResults ->
+                    val isSuccess = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+                    if (isSuccess || askType != AskType.InsistUntilSuccess) {
+                        permissionResultHandlers.remove(requestCode)
+                        completion(isSuccess)
+                    } else {
+                        // request again
+                        requestPermissionArray(wantedPermissions, requestCode)
+                    }
+                }
+
+                requestPermissionArray(wantedPermissions, requestCode)
+            }
+        }
     }
 
-    private fun Activity.requestPermission(permission: String, requestCode: Int) {
-        ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+    private fun Context.hasPermissions(permissions: Array<String>): Boolean = permissions.all {
+        ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun Activity.requestPermissionArray(permissions: Array<String>, requestCode: Int) {
+        ActivityCompat.requestPermissions(this, permissions, requestCode)
     }
     //endregion
 }
