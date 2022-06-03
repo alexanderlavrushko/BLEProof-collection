@@ -1,18 +1,26 @@
 package com.rpt11.bleproofcentralnoscan
 
+import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+
+private const val BLUETOOTH_PERMISSIONS_REQUEST_CODE = 1
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,11 +57,18 @@ class MainActivity : AppCompatActivity() {
         recyclerViewDeviceList.layoutManager = LinearLayoutManager(this)
         recyclerViewDeviceList.adapter = deviceListAdapter
 
-        reloadDevices()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // Don't ask for permission right after application start
+            if (hasPermissions(arrayOf(Manifest.permission.BLUETOOTH_CONNECT))) {
+                reloadDevices()
+            }
+        } else {
+            reloadDevices()
+        }
     }
 
     private fun setupButtonHandlers() {
-        buttonReloadDevices.setOnClickListener { reloadDevices() }
+        buttonReloadDevices.setOnClickListener { grantPermissionsAndReloadDevices() }
         imageButtonInfo.setOnClickListener { toggleShowInfo() }
     }
 
@@ -72,4 +87,72 @@ class MainActivity : AppCompatActivity() {
         }
         deviceListAdapter.updateList(ArrayList(bleDevices))
     }
+
+    private fun grantPermissionsAndReloadDevices() {
+        grantBluetoothBasicPermissions(AskType.AskOnce) { isGranted ->
+            if (!isGranted) {
+                Log.e("Permissions", "Bluetooth permissions denied")
+                return@grantBluetoothBasicPermissions
+            }
+            reloadDevices()
+        }
+    }
+
+    //region Permissions management
+    enum class AskType {
+        AskOnce,
+        InsistUntilSuccess
+    }
+
+    private var permissionResultHandlers = mutableMapOf<Int, (Array<out String>, IntArray) -> Unit>()
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionResultHandlers[requestCode]?.let { handler ->
+            handler(permissions, grantResults)
+        } ?: run {
+            Log.e("Permissions", "onRequestPermissionsResult requestCode=$requestCode not handled")
+        }
+    }
+
+    private fun grantBluetoothBasicPermissions(askType: AskType, completion: (Boolean) -> Unit) {
+        val wantedPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            arrayOf(
+                Manifest.permission.BLUETOOTH_CONNECT
+            )
+        } else {
+            emptyArray()
+        }
+
+        if (wantedPermissions.isEmpty() || hasPermissions(wantedPermissions)) {
+            completion(true)
+        } else {
+            runOnUiThread {
+                val requestCode = BLUETOOTH_PERMISSIONS_REQUEST_CODE
+
+                // set permission result handler
+                permissionResultHandlers[requestCode] = { _ /*permissions*/, grantResults ->
+                    val isSuccess = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+                    if (isSuccess || askType != AskType.InsistUntilSuccess) {
+                        permissionResultHandlers.remove(requestCode)
+                        completion(isSuccess)
+                    } else {
+                        // request again
+                        requestPermissionArray(wantedPermissions, requestCode)
+                    }
+                }
+
+                requestPermissionArray(wantedPermissions, requestCode)
+            }
+        }
+    }
+
+    private fun Context.hasPermissions(permissions: Array<String>): Boolean = permissions.all {
+        ActivityCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun Activity.requestPermissionArray(permissions: Array<String>, requestCode: Int) {
+        ActivityCompat.requestPermissions(this, permissions, requestCode)
+    }
+    //endregion
 }
