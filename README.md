@@ -1,5 +1,5 @@
 # BLEProof-collection
-Collection of sample Bluetooth Low Energy applications for iOS, Android and ESP32.
+Collection of sample Bluetooth Low Energy applications for iOS, Android, ESP32 and Arduino Nano 33 IoT.
 
 ### What they do
 The apps implement basic BLE communication:
@@ -22,13 +22,22 @@ Android BLE Central | iOS BLE Peripheral
 
 ### How to run
 To run and see it working, you need 2 physical devices supporting Bluetooth Low Energy:
-* one device for BLE Central app - Android, iOS or ESP32
-* another device for BLE Peripheral app - Android, iOS or ESP32
+* one device for BLE Central app - Android, iOS, ESP32 or [another supported device](#supported-devices)
+* another device for BLE Peripheral app - Android, iOS, ESP32 or [another supported device](#supported-devices)
 
 ...and some development tools:
 * Android Studio - for Android project
 * Xcode - for iOS project
 * Arduino IDE [with ESP32 board installed](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/) - for ESP32
+* Arduino IDE with ArduinoBLE library - [for Arduino Nano 33 IoT](https://www.arduino.cc/en/Guide/NANO33IoT)
+
+## Supported devices
+Platform | Peripheral | Central | Notes
+----- | ----- | ----- | -----
+Android | YES | YES | Android 5.0 and newer, including Android 12
+iOS | YES | YES | iOS 11.0 and newer
+ESP32 | YES | YES |  |
+Arduino Nano 33 | YES | YES | Tested on Arduino Nano 33 IoT, but should work on any board compatible with ArduinoBLE library
 
 ## Table of UUIDs
 Name | UUID
